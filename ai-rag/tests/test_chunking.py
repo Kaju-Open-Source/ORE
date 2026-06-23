@@ -1,5 +1,5 @@
-"""Tests for orerag.chunking.chunker."""
-from orerag.chunking import chunk_pages, create_chunks
+"""Tests for chunking.py"""
+from chunking import chunk_pages, create_chunks
 
 
 def test_create_chunks_returns_list_of_strings():

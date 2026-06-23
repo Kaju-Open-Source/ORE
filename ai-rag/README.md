@@ -1,214 +1,95 @@
-# orerag — ORE AI-RAG Pipeline
+# 🤖 AI team — `ai-rag/`
 
-[![Python](https://img.shields.io/badge/python-3.9%2B-blue)](https://www.python.org/)
-[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![Status](https://img.shields.io/badge/status-beta-yellow)](#)
+This folder is the **AI team's home**. It owns the Python pipeline that
+turns PDFs into chunks and embeddings. Retrieval and the chat API will
+land here later.
 
-Local-first **Retrieval-Augmented Generation (RAG)** pipeline that powers the
-[**ORE** platform](https://github.com/kajuopensource/ore) by
-[**Kaju Open Source**](https://github.com/kajuopensource).
-
-It takes PDFs (or any text) → chunks them → embeds them locally with Ollama →
-stores them in ChromaDB → retrieves relevant context → and answers questions
-with a local LLM. **Nothing leaves your machine.**
+> **Before contributing, read [`../CONTRIBUTING.md`](../CONTRIBUTING.md).**
+> It explains the team workflow, what you can edit, and how to hand off
+> changes to the Backend team.
 
 ---
 
-## ✨ Features
-
-- 📄 **PDF ingestion** via PyMuPDF
-- ✂️ **Smart chunking** (LangChain `RecursiveCharacterTextSplitter` + page-aware mode)
-- 🧠 **Local embeddings** via Ollama (`nomic-embed-text`)
-- 💾 **Persistent vector DB** via ChromaDB
-- 🔍 **Semantic retrieval** with metadata + distance scoring
-- 💬 **RAG chat** with a context-grounded study-assistant prompt
-- 🌐 **FastAPI service** (`/chat`, `/upload`, `/documents`, `/health`)
-- 🧰 **CLI**: `orerag ingest | chat | serve`
-- 🐳 **Dockerfile + compose** for self-hosting
-- 🧪 **25 unit + API tests**, all run offline
-
----
-
-## 🏗️ Architecture
-
-```text
-PDF / text
-   │
-   ▼  ingestion/         extract_pages() / extract_pdf_text()
-chunks
-   │
-   ▼  chunking/          create_chunks() / chunk_pages()
-embeddings
-   │
-   ▼  embedding/         get_embeddings()   ← Ollama (nomic-embed-text)
-vector store
-   │
-   ▼  storage/           add_chunks() / search()    ← ChromaDB (persistent)
-retrieval
-   │
-   ▼  retrieval/         retrieve() / retrieve_with_meta()
-answer
-   │
-   ▼  pipeline/chat.py   ask_question()  ← Ollama LLM
-HTTP
-   │
-   ▼  api/app.py         FastAPI (or CLI via orerag)
-```
-
----
-
-## 📦 Project layout
+## What's in here (you can read the whole folder in 60 seconds)
 
 ```text
 ai-rag/
-├── src/orerag/                 # the installable package
-│   ├── __init__.py
-│   ├── config.py               # env-driven Settings dataclass
-│   ├── cli.py                  # `orerag` console-script entrypoint
-│   │
-│   ├── ingestion/              # PDF → text
-│   │   └── pdf_processor.py
-│   ├── chunking/               # text → chunks
-│   │   └── chunker.py
-│   ├── embedding/              # text → vectors (Ollama)
-│   │   └── embedder.py
-│   ├── storage/                # vectors → ChromaDB
-│   │   └── vector_store.py
-│   ├── retrieval/              # question → top-k chunks
-│   │   └── retriever.py
-│   ├── prompts/                # system prompts
-│   │   └── __init__.py
-│   ├── pipeline/               # end-to-end orchestrators
-│   │   ├── ingest.py           # ingest_document / ingest_documents
-│   │   └── chat.py             # ask_question
-│   └── api/                    # FastAPI service
-│       └── app.py
+├── ingestion.py     📄 PDF → text            (read a document)
+├── chunking.py      ✂️  text → chunks          (split into pieces)
+├── embedding.py     🧠 text → vectors          (turn text into numbers)
+├── config.py        ⚙️  settings               (env vars, nothing else)
 │
-├── tests/                      # pytest suite (25 tests, no Ollama needed)
-│   ├── conftest.py
+├── tests/
 │   ├── data/sample.pdf
 │   ├── test_ingestion.py
 │   ├── test_chunking.py
-│   ├── test_storage.py
-│   ├── test_pipeline.py
-│   ├── test_api.py
-│   └── test_prompts.py
+│   └── test_embedding.py
 │
-├── docker/                     # self-hosting assets
-│   ├── Dockerfile
-│   └── docker-compose.yml
-│
-├── pyproject.toml              # packaging + tooling config
-├── Makefile                    # install / test / lint / run-*
-├── .env.example                # env template
+├── pyproject.toml    # pip reads this
+├── requirements.txt  # plain-pip mirror of runtime deps
+├── Makefile          # make test, make lint, …
+├── .env.example
 ├── .gitignore
-├── requirements.txt            # mirror of pyproject deps (no install required)
-└── README.md
+├── LICENSE
+└── README.md         # ← you are here
 ```
+
+**No sub-packages. No `__init__.py`. No `src/` folder.**
+Four Python files at the top. That's it.
 
 ---
 
-## 🚀 Quick start
-
-### 1. Prerequisites
-
-- **Python ≥ 3.9**
-- **Ollama** running locally: <https://ollama.com/download>
-- Models pulled:
-
-  ```bash
-  ollama pull nomic-embed-text
-  ollama pull gemma4:31b-cloud     # or any chat model you like
-  ```
-
-### 2. Install
+## ⚡ Quick start
 
 ```bash
-git clone https://github.com/kajuopensource/ore
-cd ore/ai-rag
+cd ai-rag
 python -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
+
+# Required: Ollama running locally with one model pulled.
+ollama serve &
+ollama pull nomic-embed-text
 ```
 
-### 3. Ingest
+Then in Python:
 
-```bash
-cp path/to/your.pdf documents/
-orerag ingest                    # ingests everything in documents/
-```
+```python
+from ingestion import extract_pdf_text
+from chunking  import create_chunks
+from embedding import get_embeddings
 
-### 4. Talk to it
-
-```bash
-# REPL
-orerag chat
-
-# Or HTTP API
-orerag serve                     # → http://localhost:8000
-curl -X POST http://localhost:8000/chat \
-     -H 'content-type: application/json' \
-     -d '{"question":"What is Naive RAG?"}'
-```
-
-### 5. Docker (self-host)
-
-```bash
-cd docker
-docker compose up --build
+text   = extract_pdf_text("documents/sample.pdf")
+chunks = create_chunks(text)
+vecs   = get_embeddings(chunks)
 ```
 
 ---
 
-## ⚙️ Configuration
-
-All settings come from environment variables (or `.env`). See `.env.example`:
-
-| Variable                  | Default              | Purpose                          |
-|---------------------------|----------------------|----------------------------------|
-| `ORERAG_CHROMA_PATH`      | `./chroma_db`        | ChromaDB persistent directory    |
-| `ORERAG_CHROMA_COLLECTION`| `documents`          | ChromaDB collection name         |
-| `ORERAG_DOCUMENTS_DIR`    | `./documents`        | Default folder for `orerag ingest` |
-| `ORERAG_EMBED_MODEL`      | `nomic-embed-text`   | Ollama embedding model           |
-| `ORERAG_LLM_MODEL`        | `gemma4:31b-cloud`   | Ollama chat model                |
-| `ORERAG_CHUNK_SIZE`       | `1000`               | Chunk size (chars)               |
-| `ORERAG_CHUNK_OVERLAP`    | `200`                | Overlap between chunks           |
-| `ORERAG_N_RESULTS`        | `4`                  | Top-k chunks per query           |
-| `ORERAG_API_HOST`         | `0.0.0.0`            | FastAPI host                     |
-| `ORERAG_API_PORT`         | `8000`               | FastAPI port                     |
-
----
-
-## 🧪 Development
+## 🧪 Run the tests
 
 ```bash
-make install         # pip install -e ".[dev]"
-make test            # run the full pytest suite
-make test-cov        # with coverage
-make lint            # ruff check src tests
-make run-api         # start FastAPI with reload
-make run-chat        # interactive RAG REPL
-make clean-db        # nuke ./chroma_db
+make test        # fast, offline tests only
+make test-net    # also run tests that need Ollama running
+make lint        # ruff
 ```
-
-The test suite is **fully offline** — `tests/conftest.py` monkeypatches
-Ollama so you don't need a running daemon to run `pytest`.
-
-See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the contributor guide and
-[`ARCHITECTURE.md`](ARCHITECTURE.md) for module-level design notes.
 
 ---
 
-## 📚 Relation to Kaju Open Source
+## ⚙️ Settings (`.env.example`)
 
-> `rag_playground/` is the experimental sandbox where this code first lived.
-> `ai-rag/` is the production-grade package that ships with ORE.
+| Variable                  | Default                 | What it does                |
+|---------------------------|-------------------------|-----------------------------|
+| `ORERAG_OLLAMA_HOST`      | `http://127.0.0.1:11434`| Where Ollama is running     |
+| `ORERAG_EMBED_MODEL`      | `nomic-embed-text`      | Embedding model to use      |
+| `ORERAG_CHUNK_SIZE`       | `1000`                  | Chunk size in characters    |
+| `ORERAG_CHUNK_OVERLAP`    | `200`                   | Overlap between chunks      |
+| `ORERAG_DOCUMENTS_DIR`    | `./documents`           | Default docs folder         |
 
-Kaju's long-term goal is to transform academic resources into a shared,
-searchable, AI-powered knowledge repository for students. This module is
-the AI core that powers that vision inside ORE.
+Only one rule: **`config.py` is the only file that reads environment
+variables.** Add new settings there.
 
 ---
 
 ## 📄 License
 
-MIT © Kaju Open Source. See [LICENSE](LICENSE).
+MIT © Kaju Open Source. See [`../LICENSE`](../LICENSE).

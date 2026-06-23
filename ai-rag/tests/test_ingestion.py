@@ -1,9 +1,9 @@
-"""Tests for orerag.ingestion.pdf_processor."""
+"""Tests for ingestion.py"""
 from pathlib import Path
 
 import pytest
 
-from orerag.ingestion import extract_pages, extract_pdf_text
+from ingestion import extract_pages, extract_pdf_text
 
 DATA = Path(__file__).resolve().parent / "data" / "sample.pdf"
 

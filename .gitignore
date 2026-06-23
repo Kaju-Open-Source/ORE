@@ -1,15 +1,42 @@
-# Node
-node_modules
-.next
-dist
-
-# Python
-__pycache__
-.venv
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
 
 # Env
 .env
 .env.local
 
-# Mac
-.DS_Store
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Virtual envs
+.venv/
+venv/
+
+# Tool caches
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+
+# Node / Next.js (frontend/)
+node_modules/
+.next/
+.turbo/
+out/
+
+# ORERAG runtime artifacts (ai-rag/)
+ai-rag/chroma_db/
+ai-rag/documents/*.pdf
+!ai-rag/documents/.gitkeep
