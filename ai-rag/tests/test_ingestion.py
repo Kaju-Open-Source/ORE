@@ -1,4 +1,3 @@
-"""Tests for ingestion.py"""
 from pathlib import Path
 
 import pytest
@@ -28,6 +27,6 @@ def test_extract_pdf_text_is_non_empty_string():
     assert text.strip(), "PDF text should not be empty"
 
 
-def test_extract_pages_missing_file_raises(tmp_path: Path):
+def test_extract_pages_missing_file_raises(tmp_path):
     with pytest.raises(Exception):
         extract_pages(tmp_path / "nope.pdf")

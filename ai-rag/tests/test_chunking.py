@@ -1,4 +1,3 @@
-"""Tests for chunking.py"""
 from chunking import chunk_pages, create_chunks
 
 
@@ -17,7 +16,7 @@ def test_create_chunks_empty_text_returns_empty_list():
 def test_chunk_pages_assigns_unique_ids_and_keeps_page():
     pages = [
         {"page": 1, "text": "a" * 1500},
-        {"page": 2, "text": ""},  # skipped
+        {"page": 2, "text": ""},
         {"page": 3, "text": "b" * 200},
     ]
     out = chunk_pages(pages, chunk_size=500, overlap=50)
@@ -27,7 +26,6 @@ def test_chunk_pages_assigns_unique_ids_and_keeps_page():
 
 
 def test_chunk_pages_overlap_keeps_context():
-    pages = [{"page": 1, "text": "abcdefghij" * 100}]  # 1000 chars
+    pages = [{"page": 1, "text": "abcdefghij" * 100}]
     out = chunk_pages(pages, chunk_size=400, overlap=100)
-    # First chunk tail should overlap with the second chunk's head.
     assert out[0]["text"][-100:] == out[1]["text"][:100]

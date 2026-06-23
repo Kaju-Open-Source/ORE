@@ -1,46 +1,7 @@
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-dist/
-*.egg-info/
-.eggs/
-
-# Virtual env
 .venv/
-venv/
-
-# IDE
-.vscode/
-.idea/
-*.swp
-.DS_Store
-
-# Env
-.env
-.env.local
-
+__pycache__/
+*.pyc
 .pytest_cache/
-htmlcov/
-.tox/
-.mypy_cache/
-
-# Runtime artifacts
-chroma_db/
-documents/*.pdf
-!documents/.gitkeep
-
-# Sample data (kept tiny under tests/data, ignored elsewhere)
-data/*.pdf
-!data/.gitkeep
-
-# Build artifacts
-*.egg-info/
-
-# Tool caches
 .ruff_cache/
 .coverage
-htmlcov/
+*.egg-info/

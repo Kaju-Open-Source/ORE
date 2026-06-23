@@ -1,61 +1,30 @@
-[build-system]
-requires = ["setuptools>=68", "wheel"]
-build-backend = "setuptools.build_meta"
-
 [project]
 name = "orerag"
 version = "0.4.0"
-description = "ORE AI-RAG — ingestion, chunking, and embedding layers (Kaju Open Source)."
-readme = "README.md"
+description = "ORE AI-RAG — ingestion, chunking, embedding."
 requires-python = ">=3.9"
-license = { text = "MIT" }
-authors = [{ name = "Kaju Open Source" }]
-keywords = ["rag", "llm", "ollama", "ore", "kaju", "ingestion", "chunking", "embedding"]
-classifiers = [
-    "Development Status :: 4 - Beta",
-    "Intended Audience :: Developers",
-    "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Topic :: Scientific/Engineering :: Artificial Intelligence",
-]
 dependencies = [
-    "pymupdf>=1.24.0",
-    "langchain-text-splitters>=0.3.0",
-    "ollama>=0.3.0",
+    "pymupdf",
+    "langchain-text-splitters",
+    "ollama",
 ]
 
 [project.optional-dependencies]
 dev = [
-    "pytest>=8.0.0",
-    "pytest-cov>=4.1.0",
-    "ruff>=0.5.0",
+    "pytest",
+    "pytest-cov",
+    "ruff",
 ]
 
-[project.urls]
-Homepage = "https://github.com/kajuopensource/ore"
-Source = "https://github.com/kajuopensource/ore/tree/main/ai-rag"
-Issues = "https://github.com/kajuopensource/ore/issues"
-
-# Flat layout: the four modules live at the project root.
-[tool.setuptools]
-py-modules = ["config", "ingestion", "chunking", "embedding"]
-
 [tool.pytest.ini_options]
-minversion = "8.0"
-addopts = "-ra --strict-markers"
 testpaths = ["tests"]
+pythonpath = ["."]
 markers = [
-    "network: needs a running Ollama daemon (deselect with -m 'not network')",
+    "network: needs a running Ollama daemon (skip with: pytest -m 'not network')",
 ]
 
 [tool.ruff]
 line-length = 100
-target-version = "py39"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP"]
@@ -63,6 +32,3 @@ ignore = ["E501"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["B017", "B006", "ANN", "UP"]
-
-[tool.coverage.run]
-source = ["config", "ingestion", "chunking", "embedding"]

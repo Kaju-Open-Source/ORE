@@ -1,4 +1,4 @@
-# Editor / OS
+# OS / editor
 .DS_Store
 .idea/
 .vscode/
@@ -10,33 +10,13 @@
 
 # Python
 __pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-dist/
-*.egg-info/
-.eggs/
-
-# Virtual envs
+*.pyc
 .venv/
-venv/
-
-# Tool caches
 .pytest_cache/
 .ruff_cache/
 .coverage
-htmlcov/
-.mypy_cache/
+*.egg-info/
 
-# Node / Next.js (frontend/)
+# Node / Next.js
 node_modules/
 .next/
-.turbo/
-out/
-
-# ORERAG runtime artifacts (ai-rag/)
-ai-rag/chroma_db/
-ai-rag/documents/*.pdf
-!ai-rag/documents/.gitkeep
