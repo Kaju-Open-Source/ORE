@@ -1,0 +1,34 @@
+[project]
+name = "orerag"
+version = "0.4.0"
+description = "ORE AI-RAG — ingestion, chunking, embedding."
+requires-python = ">=3.9"
+dependencies = [
+    "pymupdf",
+    "langchain-text-splitters",
+    "ollama",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-cov",
+    "ruff",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+markers = [
+    "network: needs a running Ollama daemon (skip with: pytest -m 'not network')",
+]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["B017", "B006", "ANN", "UP"]
