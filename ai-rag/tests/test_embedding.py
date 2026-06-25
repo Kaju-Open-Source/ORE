@@ -1,6 +1,6 @@
 import pytest
 
-from embedding import DEFAULT_EMBED_MODEL, get_embedding, get_embeddings
+from pdf_embedding import DEFAULT_EMBED_MODEL, get_embedding, get_embeddings
 
 
 def test_default_model_is_nomic_embed_text():

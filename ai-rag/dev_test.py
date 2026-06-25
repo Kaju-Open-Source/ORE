@@ -1,9 +1,14 @@
-from ingestion import extract_pages
-from chunking import chunk_pages
+from pdf_ingestion import extract_pages
+from pdf_ingestion import extract_pdf_text
+from pdf_chunking import chunk_pages
 from vector_store import store_chunk
-from retrevier import retrieve_context
+from retriever import retrieve_context
+from generation.answer_questions import answer_questions
+from generation.viva import generate_viva
 
-pages = extract_pages("./tests/data/sample.pdf")
+pdf_path = "./tests/data/sample.pdf"
+
+pages = extract_pages(pdf_path)
 
 chunks = chunk_pages(pages)
 
@@ -14,9 +19,10 @@ for i, chunk in enumerate(chunks):
         page=chunk["page"]
     )
 
+pdf_text = extract_pdf_text(pdf_path)
 
-question = input("Ask a Question")
+print(generate_viva(pdf_text))
 
-context = retrieve_context(question)
 
-print("Answer : \n",context)
+
+
