@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from ingestion import extract_pages, extract_pdf_text
+from pdf_ingestion import extract_pages, extract_pdf_text
 
 DATA = Path(__file__).resolve().parent / "data" / "sample.pdf"
 

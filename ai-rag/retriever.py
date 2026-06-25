@@ -1,5 +1,5 @@
 import chromadb
-from embedding import get_embedding
+from pdf_embedding import get_embedding
 
 client = chromadb.PersistentClient("./chroma_db")
 collection = client.get_or_create_collection(

@@ -1,8 +1,10 @@
-from ingestion import extract_pages
-from chunking import chunk_pages
+from pdf_ingestion import extract_pages
+from pdf_ingestion import extract_pdf_text
+from pdf_chunking import chunk_pages
 from vector_store import store_chunk
 from retriever import retrieve_context
 from generation.answer_questions import answer_questions
+from generation.notes import generate_notes
 
 pdf_path = "./tests/data/sample.pdf"
 
@@ -17,8 +19,10 @@ for i, chunk in enumerate(chunks):
         page=chunk["page"]
     )
 
+pdf_text = extract_pdf_text(pdf_path)
 
-question = input("Ask a Question")
-ans = answer_questions(question)
-print("Answer : "+ans)
+print(generate_notes(pdf_text))
+
+
+
 

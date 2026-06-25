@@ -1,5 +1,5 @@
 import chromadb
-from embedding import get_embedding
+from pdf_embedding import get_embedding
 
 #Open ChromaDB
 client = chromadb.PersistentClient(path = "./chroma_db")
